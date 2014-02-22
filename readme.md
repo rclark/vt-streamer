@@ -19,7 +19,7 @@ vtStream(JSON.parse(tilejson), function (err, streamTile) {
 
     // Callback gives you a function that you can use to make tile requests
     // The function returns a readable stream that emits GeoJSON features
-    var geojson = streamTile(tilecoord)
+    var geojson = streamTile(coords)
         // Error during parsing or from making the tile request...
         .on('error', function(err) { console.log(err); })
 
