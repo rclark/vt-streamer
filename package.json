@@ -1,0 +1,26 @@
+{
+  "name": "vt-streamer",
+  "version": "0.0.0",
+  "description": "Pull vector tiles and stream out GeoJSON features",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rclark/vt-streamer.git"
+  },
+  "author": "Ryan Clark",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/rclark/vt-streamer/issues"
+  },
+  "bin": {
+    "vt-stream": "bin/vt-stream.js"
+  },
+  "homepage": "https://github.com/rclark/vt-streamer",
+  "dependencies": {
+    "geojson-stream": "0.0.0",
+    "vt-dumper": "0.0.1"
+  }
+}
