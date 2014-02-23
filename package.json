@@ -1,6 +1,6 @@
 {
   "name": "vt-streamer",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Pull vector tiles and stream out GeoJSON features",
   "main": "index.js",
   "scripts": {

@@ -23,8 +23,8 @@ vtStream(JSON.parse(tilejson), function (err, streamTile) {
         // Error during parsing or from making the tile request...
         .on('error', function(err) { console.log(err); })
 
-        // `tileLoaded` event is fired and provides the vectorTile object and its compressed size
-        .on('tileLoaded', function(vtile, size) {
+        // `tileLoaded` event is fired and provides the vectorTile object, its compressed size, and coords
+        .on('tileLoaded', function(vtile, size, coords) {
             console.log('Loaded ' + size + ' bytes of vector tile goodness');
         })
 
@@ -36,5 +36,16 @@ vtStream(JSON.parse(tilejson), function (err, streamTile) {
         .on('data', function(feature) {
             console.log(feature.properties);
         });
+
+    // Or if you want to stream a bunch of data...
+    var multipleTiles = [[0,0,0],[1,0,0],[1,1,0],[1,0,1]];
+    var moreGeoJson = streamTile(multipleTiles)
+        .on('error', function(err) { console.log(err); })
+        .on('tileLoaded', function(vtile, size, coords) {
+            console.log('Data received for ' + coords.join('/'));
+        })
+        .on('data', function(feature) {
+            console.log(feature.geometry.coordinates);
+        })
 });
 ```

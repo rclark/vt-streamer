@@ -8,34 +8,45 @@ var VtStreamer = function(tileJson, callback) {
         callback(null, streamTile);
 
         function streamTile(coords) {
+            if (coords.length === 3 && 
+                !isNaN(coords[0]) &&
+                !isNaN(coords[1]) &&
+                !isNaN(coords[2])) coords = [ coords ];
+
             var geojson = geojsonStream.parse();
 
-            getTile(coords, function (err, data, vtile, size) {
-                if (err) return geojson.emit('error', err);
+            function closeStream() { geojson.end(); }
 
-                function closeStream() { geojson.end(); }
+            function getOneTile(tileIndex) {
+                if (tileIndex === coords.length) return closeStream();
 
-                function writeLayer(index) {
-                    if (index === data.length) return closeStream();
+                var tileCoords = coords[tileIndex];
 
-                    var layer = data[index];
-                    geojson.emit('startLayer', layer.name);
+                getTile(tileCoords, function (err, data, vtile, size) {
+                    if (err) return geojson.emit('error', err);
 
-                    if (geojson.write(JSON.stringify(layer))) {
-                        geojson.emit('finishLayer', layer.name);
-                        writeLayer(index + 1);
-                    } else {
-                        geojson.once('drain', function() {
+                    function writeLayer(layerIndex) {
+                        if (layerIndex === data.length) return getOneTile(tileIndex + 1);
+
+                        var layer = data[layerIndex];
+                        geojson.emit('startLayer', layer.name);
+
+                        if (geojson.write(JSON.stringify(layer))) {
                             geojson.emit('finishLayer', layer.name);
-                            writeLayer(index + 1);
-                        });
+                            writeLayer(layerIndex + 1);
+                        } else {
+                            geojson.once('drain', function() {
+                                geojson.emit('finishLayer', layer.name);
+                                writeLayer(layerIndex + 1);
+                            });
+                        }
                     }
-                }
-                
-                geojson.emit('tileLoaded', vtile, size);
-                writeLayer(0);
-            });
-
+                    
+                    geojson.emit('tileLoaded', vtile, size, tileCoords);
+                    writeLayer(0);
+                });
+            }
+            getOneTile(0);
             return geojson;
         }
     });
