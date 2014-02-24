@@ -1,8 +1,15 @@
 # vt-streamer
 
-Pull down a vector tile, and stream individual GeoJSON features out of it. You provide:
+Pull down a vector tile, and stream individual GeoJSON features out of it. 
+
+**You provide:**
+
 - [TileJSON](https://github.com/mapbox/tilejson-spec) that indicates where to get the tile from
 - Tile coordinates to grab, as an array of `[z, x, y]`
+
+**You get:**
+
+- A stream that runs through all the layers in the vector tile and emits individual GeoJSON features
 
 ## Example usage
 
